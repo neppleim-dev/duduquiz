@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>두꺼비 파리를 물고 - 사설시조 스피드 퀴즈</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            bg: '#F8F9FA',
+                            pink: '#FFD1DC',
+                            pinkLight: '#FFF0F3',
+                            blue: '#BEE3F8',
+                            blueLight: '#EBF8FF',
+                            mint: '#C6F6D5',
+                            mintLight: '#F0FFF4',
+                            yellow: '#FEFCBF',
+                            yellowLight: '#FFFFF0',
+                            purple: '#E9D8FD',
+                            purpleDark: '#6B46C1',
+                            card: '#FFFFFF',
+                            text: '#2D3748',
+                            muted: '#718096'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Pretendard', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'Roboto', 'sans-serif'],
+                        serif: ['Nanum Myeongjo', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #FFF5F5 0%, #F0FFF4 50%, #EBF8FF 100%);
+            min-height: 100vh;
+        }
+        .poem-font {
+            font-family: 'Nanum Myeongjo', serif;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 30px -5px rgba(180, 190, 210, 0.3);
+        }
+        @keyframes pulse-subtle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+        .pulse-btn {
+            animation: pulse-subtle 2s infinite ease-in-out;
+        }
+    </style>
+</head>
+<body class="text-pastel-text flex flex-col min-h-screen p-4 md:p-8">
+
+    <!-- Header / Navigation -->
+    <header class="max-w-3xl w-full mx-auto mb-6 flex justify-between items-center bg-white/70 backdrop-blur-md p-4 rounded-2xl shadow-sm border border-white/80">
+        <div class="flex items-center space-x-3">
+            <span class="text-2xl">🐸</span>
+            <div>
+                <h1 class="font-bold text-lg text-gray-800 leading-tight">두꺼비 파리를 물고...</h1>
+                <p class="text-xs text-pastel-muted">중학교 국어 4단원 사설시조 스피드 퀴즈</p>
+            </div>
+        </div>
+        <div id="header-user-badge" class="hidden text-xs bg-pastel-purple/50 text-pastel-purpleDark px-3 py-1.5 rounded-full font-semibold border border-purple-200">
+            <!-- Dynamically populated -->
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-3xl w-full mx-auto flex-1 flex flex-col justify-center">
+
+        <!-- STEP 1: START / REGISTRATION SCREEN -->
+        <div id="screen-start" class="glass-card rounded-3xl p-6 md:p-10 custom-shadow space-y-6">
+            <div class="text-center space-y-3">
+                <span class="inline-block px-3 py-1 bg-pink-100 text-pink-700 font-semibold text-xs rounded-full">사설시조 이해하기</span>
+                <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800">국어 퀴즈 챌린지!</h2>
+                <p class="text-sm text-gray-600">학번과 이름을 입력한 후 퀴즈를 풀어보세요.<br><span class="text-emerald-600 font-semibold">정확도</span>와 <span class="text-blue-600 font-semibold">속도</span>에 따라 실시간 순위가 결정됩니다!</p>
+            </div>
+
+            <!-- Poem Review Toggle Card -->
+            <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-5 space-y-3">
+                <div class="flex justify-between items-center cursor-pointer" onclick="togglePoem()">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-amber-600 font-bold text-sm">📖 작품 다시보기</span>
+                        <span class="text-xs text-amber-700 bg-amber-100 px-2 py-0.5 rounded">두꺼비 파리를 물고...</span>
+                    </div>
+                    <span id="poem-toggle-icon" class="text-amber-600 text-xs transition-transform duration-300">▼ 보기</span>
+                </div>
+                <div id="poem-content" class="hidden pt-3 border-t border-amber-200/50 space-y-3">
+                    <div class="poem-font text-base md:text-lg leading-relaxed text-gray-800 bg-white/80 p-4 rounded-xl border border-amber-100">
+                        두꺼비 파리를 물고 두엄 위에 치달아 앉아<br>
+                        건넛산 바라보니 백송골이 떠 있거늘 가슴이 끔찍하여 풀떡 뛰어 내닫다가 두엄 아래 자빠졌구나<br>
+                        모쳐라 날랜 나이니 망정이지 어혈 질 뻔했구나
+                        <p class="text-right text-xs text-gray-500 font-sans mt-2">- 작자 미상 -</p>
+                    </div>
+                    <div class="text-xs text-amber-900/80 space-y-1 bg-amber-100/50 p-3 rounded-lg">
+                        <p>💡 <strong>핵심 포인트:</strong></p>
+                        <ul class="list-disc list-inside space-y-0.5 text-gray-700">
+                            <li><strong>두꺼비:</strong> 약자에게 강하고 강자에게 약한 탐관오리 (지배층)</li>
+                            <li><strong>파리:</strong> 수탈당하는 힘없는 백성</li>
+                            <li><strong>백송골:</strong> 두꺼비보다 강한 상급 권력자 (암행어사, 중앙 관리)</li>
+                            <li><strong>풍자(Satire):</strong> 두꺼비의 허풍과 위선을 우스꽝스럽게 비판함</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Info Banner -->
+            <div class="grid grid-cols-2 gap-3 text-center">
+                <div class="bg-pastel-blueLight p-3 rounded-xl border border-blue-100">
+                    <p class="text-xs text-blue-600 font-medium">총 문항 수</p>
+                    <p class="text-lg font-bold text-blue-900">5문제</p>
+                </div>
+                <div class="bg-pastel-mintLight p-3 rounded-xl border border-emerald-100">
+                    <p class="text-xs text-emerald-600 font-medium">순위 산정 방식</p>
+                    <p class="text-lg font-bold text-emerald-900">정답 수 + 소요 시간</p>
+                </div>
+            </div>
+
+            <!-- Student Form -->
+            <form id="form-user" onsubmit="handleStartQuiz(event)" class="space-y-4 pt-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="student-id" class="block text-xs font-bold text-gray-700 mb-1">학번 (예: 20201)</label>
+                        <input type="text" id="student-id" required placeholder="예: 20315" 
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 bg-white/90 text-sm">
+                    </div>
+                    <div>
+                        <label for="student-name" class="block text-xs font-bold text-gray-700 mb-1">이름</label>
+                        <input type="text" id="student-name" required placeholder="예: 김국어" 
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-pink-300 focus:border-pink-400 bg-white/90 text-sm">
+                    </div>
+                </div>
+
+                <button type="submit" 
+                    class="pulse-btn w-full py-4 bg-gradient-to-r from-pink-400 via-rose-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-lg rounded-2xl shadow-lg shadow-pink-200 transition duration-200 flex items-center justify-center space-x-2">
+                    <span>🚀 퀴즈 시작하기</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- STEP 2: QUIZ SCREEN -->
+        <div id="screen-quiz" class="hidden glass-card rounded-3xl p-6 md:p-8 custom-shadow space-y-6">
+            <!-- Progress & Timer Bar -->
+            <div class="space-y-2">
+                <div class="flex justify-between items-center text-xs font-bold text-gray-600">
+                    <span id="quiz-step-indicator" class="bg-white/80 px-3 py-1 rounded-full border border-gray-200">문제 1 / 5</span>
+                    <div class="flex items-center space-x-2">
+                        <span id="difficulty-badge" class="px-2.5 py-0.5 rounded-full text-xs font-semibold">난이도 하</span>
+                        <span class="bg-gray-800 text-emerald-400 font-mono text-sm px-3 py-1 rounded-xl shadow-inner flex items-center space-x-1">
+                            <span>⏱️</span>
+                            <span id="timer-display">00:00.0</span>
+                        </span>
+                    </div>
+                </div>
+                <!-- Progress Bar Track -->
+                <div class="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden border border-gray-200">
+                    <div id="progress-bar" class="h-full bg-gradient-to-r from-pink-400 to-purple-400 transition-all duration-300 w-1/5"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white/90 p-5 md:p-6 rounded-2xl border border-purple-100 space-y-3 shadow-sm">
+                <p id="question-category" class="text-xs font-semibold text-purple-600">개념 및 시어의 의미</p>
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-gray-800 leading-snug">
+                    질문 내용이 여기에 들어갑니다.
+                </h3>
+            </div>
+
+            <!-- Options Grid -->
+            <div id="options-container" class="space-y-3">
+                <!-- Dynamically populated options -->
+            </div>
+
+            <!-- Immediate Feedback Banner (Hidden by default) -->
+            <div id="feedback-banner" class="hidden p-4 rounded-xl border text-sm font-medium transition-all duration-300">
+                <p id="feedback-title" class="font-bold text-base mb-1"></p>
+                <p id="feedback-desc" class="text-xs leading-relaxed"></p>
+            </div>
+        </div>
+
+        <!-- STEP 3: RESULT & LEADERBOARD SCREEN -->
+        <div id="screen-result" class="hidden space-y-6">
+            <!-- Result Summary Card -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 custom-shadow text-center space-y-5">
+                <div class="inline-block p-4 rounded-full bg-gradient-to-tr from-yellow-200 to-amber-100 shadow-inner">
+                    <span id="trophy-emoji" class="text-4xl md:text-5xl">🏆</span>
+                </div>
+                
+                <div>
+                    <span id="result-user-info" class="text-sm font-bold text-purple-700 bg-purple-100 px-3 py-1 rounded-full">20315 김국어 학생</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-gray-800 mt-2">퀴즈 완료!</h2>
+                    <p class="text-xs text-gray-500 mt-1">사설시조 '두꺼비 파리를 물고' 스피드 테스트 결과입니다.</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto">
+                    <div class="bg-white/90 p-3 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="text-xs text-gray-500">최종 점수</p>
+                        <p id="res-score" class="text-xl md:text-2xl font-extrabold text-purple-600">100점</p>
+                        <p id="res-accuracy" class="text-[10px] text-gray-400">(5문제 중 5개)</p>
+                    </div>
+                    <div class="bg-white/90 p-3 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="text-xs text-gray-500">소요 시간</p>
+                        <p id="res-time" class="text-xl md:text-2xl font-extrabold text-blue-600">12.4초</p>
+                        <p class="text-[10px] text-gray-400">초단위 정밀 측정</p>
+                    </div>
+                    <div class="bg-white/90 p-3 rounded-2xl border border-amber-200 bg-amber-50/30 shadow-sm">
+                        <p class="text-xs text-amber-700 font-medium">현재 순위</p>
+                        <p id="res-rank" class="text-xl md:text-2xl font-extrabold text-amber-600">1위</p>
+                        <p class="text-[10px] text-amber-600/80">실시간 순위 반영</p>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-3 pt-2">
+                    <button onclick="toggleReviewModal()" class="px-5 py-3 bg-white hover:bg-gray-50 text-gray-700 font-bold text-sm rounded-xl border border-gray-200 shadow-sm transition">
+                        🔍 오답 노트 / 풀이 보기
+                    </button>
+                    <button onclick="restartQuiz()" class="px-5 py-3 bg-gradient-to-r from-pink-400 to-purple-400 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-sm rounded-xl shadow-md transition">
+                        🔄 다시 도전하기
+                    </button>
+                </div>
+            </div>
+
+            <!-- Leaderboard Card -->
+            <div class="glass-card rounded-3xl p-6 md:p-8 custom-shadow space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 flex items-center space-x-2">
+                            <span>🥇</span>
+                            <span>실시간 명예의 전당 (순위표)</span>
+                        </h3>
+                        <p class="text-xs text-gray-500">순위 기준: ① 정답 개수(높은 순) ➔ ② 소요 시간(빠른 순)</p>
+                    </div>
+                    <button onclick="resetLeaderboard()" class="text-[11px] text-gray-400 hover:text-gray-600 underline">
+                        순위 초기화
+                    </button>
+                </div>
+
+                <!-- Leaderboard Table -->
+                <div class="overflow-hidden rounded-2xl border border-gray-100 shadow-sm bg-white/90">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-semibold border-b border-gray-100">
+                            <tr>
+                                <th class="py-3 px-4 text-center">순위</th>
+                                <th class="py-3 px-4">학번</th>
+                                <th class="py-3 px-4">이름</th>
+                                <th class="py-3 px-4 text-center">정답수</th>
+                                <th class="py-3 px-4 text-center">걸린 시간</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-tbody" class="divide-y divide-gray-100 text-gray-700">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Review Modal -->
+    <div id="modal-review" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 class="font-bold text-lg text-gray-800">📝 문제별 정답 및 상세 해설</h3>
+                <button onclick="toggleReviewModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold px-2">✕</button>
+            </div>
+            <div id="review-content" class="p-6 overflow-y-auto space-y-6 flex-1">
+                <!-- Dynamically populated review questions -->
+            </div>
+            <div class="p-4 border-t border-gray-100 bg-gray-50 text-right">
+                <button onclick="toggleReviewModal()" class="px-5 py-2 bg-purple-500 text-white font-bold text-sm rounded-xl hover:bg-purple-600">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-xs text-pastel-muted">
+        <p>© 중학교 국어 사설시조 '두꺼비 파리를 물고' 학습용 인터랙티브 웹앱</p>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // 5 Quiz Questions (3 Easy / 난이도 하, 2 Medium / 난이도 중)
+        const QUIZ_QUESTIONS = [
+            {
+                id: 1,
+                difficulty: '하',
+                category: '시어의 상징적 의미',
+                question: '이 시조에서 "두꺼비"가 상징하는 인물 유형으로 가장 적절한 것은 무엇인가요?',
+                options: [
+                    '가난하고 힘없는 불쌍한 백성',
+                    '약자에게 강하고 강자에게 쩔쩔매는 탐관오리',
+                    '백성을 지키기 위해 봉기한 의로운 의병장',
+                    '벼슬을 버리고 자연에 묻혀 사는 선비',
+                    '암행을 통해 악덕 관리를 벌하는 정의로운 사또'
+                ],
+                answer: 1, // 0-indexed: Option 2
+                explanation: '"두꺼비"는 힘없는 파리(백성)는 억압하면서, 백송골(더 센 권력자) 앞에서는 겁을 먹고 자빠지는 당시의 부패한 탐관오리를 비유합니다.'
+            },
+            {
+                id: 2,
+                difficulty: '하',
+                category: '시어의 상징적 의미',
+                question: '이 시조에서 두꺼비가 입에 물고 있는 "파리"가 의미하는 대상은 누구인가요?',
+                options: [
+                    '부정부패를 저지르는 기득권 관리',
+                    '두꺼비를 밀어내려는 정적(정치적 적대자)',
+                    '탐관오리에게 수탈당하고 억압받는 힘없는 백성',
+                    '외세의 침략에 부역하는 간신',
+                    '궁궐에서 왕을 모시는 내시'
+                ],
+                answer: 2, // Option 3
+                explanation: '"파리"는 두꺼비(탐관오리)에게 잡아먹히고 괴롭힘을 당하는 힘없고 가난한 민중(피통치 백성)을 뜻합니다.'
+            },
+            {
+                id: 3,
+                difficulty: '하',
+                category: '핵심 표현 방법',
+                question: '이 시조는 두꺼비의 행동을 우스꽝스럽게 묘사하여 부패한 지배층을 비판하고 있습니다. 이 표현 방법은 무엇인가요?',
+                options: [
+                    '반어',
+                    '역설',
+                    '풍자',
+                    '감정이입',
+                    '대구법'
+                ],
+                answer: 2, // Option 3
+                explanation: '부조리한 인물이나 사회 현상을 우스꽝스럽게 표현하여 간접적으로 비판하고 웃음을 유발하는 표현 방법을 "풍자"라고 합니다.'
+            },
+            {
+                id: 4,
+                difficulty: '중',
+                category: '구절 및 인물의 태도 이해',
+                question: '종장의 "모쳐라 날랜 나이니 망정이지 어혈 질 뻔했구나"에 나타난 두꺼비의 태도로 가장 적절한 것은?',
+                options: [
+                    '자신의 비겁한 실수를 진심으로 뉘우치고 자책하고 있다.',
+                    '백송골에게 당한 모욕을 갚기 위해 칼을 갈고 있다.',
+                    '자빠진 볼품없는 상황에서도 능청스럽게 허풍과 위선을 떨고 있다.',
+                    '자신이 얼마나 뛰어난 무예 실력을 갖췄는지 자랑스럽게 과시한다.',
+                    '백성을 제대로 보살피지 못한 자책감에 눈물을 흘리고 있다.'
+                ],
+                answer: 2, // Option 3
+                explanation: '두꺼비는 백송골을 보고 놀라 두엄 아래로 무꼴있게 자빠졌음에도, "마침 날쌘 나였기에 망정이지 하마터면 멍들 뻔했네!"라며 자신의 비겁함을 허풍과 능청으로 포장하고 있습니다.'
+            },
+            {
+                id: 5,
+                difficulty: '중',
+                category: '시어 간 대립 구조 파악',
+                question: '이 시조에 등장하는 시어들의 관계와 해설 중 올바르지 **않은** 것은 무엇인가요?',
+                options: [
+                    '\'두엄\'은 두꺼비가 부당하게 모은 재물이나 자신의 세력 터전을 뜻한다.',
+                    '\'백송골\'은 두꺼비보다 훨씬 더 강한 중앙 권력자나 암행어사를 의미한다.',
+                    '두꺼비가 두엄 아래로 자빠지는 모습은 지배층의 위선과 실추를 희화화한 것이다.',
+                    '\'백송골\'과 \'파리\'는 연대하여 두꺼비를 축출하는 평등한 협력 관계이다.',
+                    '이 시조는 조선 후기 사설시조로, 평민층의 솔직하고 해학적인 정서가 반영되어 있다.'
+                ],
+                answer: 3, // Option 4 is INCORRECT statement
+                explanation: '백송골은 더 막강한 고위 권력자이고, 파리는 힘없는 피통치 백성입니다. 두 존재가 협력하는 평등한 관계라는 설명은 적절하지 않습니다.'
+            }
+        ];
+
+        // Initial Leaderboard Data (Empty)
+        const INITIAL_LEADERBOARD = [];
+
+        // State Management
+        let currentUser = { studentId: '', name: '' };
+        let currentQuestionIndex = 0;
+        let userAnswers = []; // stores user selected option indices
+        let timerInterval = null;
+        let startTime = 0;
+        let elapsedTime = 0; // in milliseconds
+        let leaderboard = [];
+
+        // Sound Effects via Web Audio API (No external asset requirement)
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function playSound(type) {
+            try {
+                if (!audioCtx) audioCtx = new AudioCtx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'click') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'correct') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'wrong') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now); // A3
+                    osc.frequency.setValueAtTime(180, now + 0.1);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'complete') {
+                    // Fanfare tri-chord
+                    [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'sine';
+                        o.frequency.setValueAtTime(freq, now + idx * 0.06);
+                        g.connect(audioCtx.destination);
+                        g.gain.setValueAtTime(0.12, now + idx * 0.06);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                        o.start(now + idx * 0.06);
+                        o.stop(now + 0.6);
+                    });
+                }
+            } catch (e) {
+                console.log('Audio playback constrained', e);
+            }
+        }
+
+        // Initialize App
+        window.onload = function() {
+            loadLeaderboard();
+        };
+
+        // Poem Toggle
+        function togglePoem() {
+            const content = document.getElementById('poem-content');
+            const icon = document.getElementById('poem-toggle-icon');
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.textContent = '▲ 접기';
+            } else {
+                content.classList.add('hidden');
+                icon.textContent = '▼ 보기';
+            }
+            playSound('click');
+        }
+
+        // Leaderboard Storage Logic
+        function loadLeaderboard() {
+            const stored = localStorage.getItem('sijo_quiz_leaderboard');
+            if (stored) {
+                try {
+                    leaderboard = JSON.parse(stored);
+                } catch (e) {
+                    leaderboard = [];
+                }
+            } else {
+                leaderboard = [];
+            }
+            sortLeaderboard();
+        }
+
+        function saveLeaderboard() {
+            localStorage.setItem('sijo_quiz_leaderboard', JSON.stringify(leaderboard));
+        }
+
+        function sortLeaderboard() {
+            // Sort by correctCount DESC, then timeSec ASC
+            leaderboard.sort((a, b) => {
+                if (b.correctCount !== a.correctCount) {
+                    return b.correctCount - a.correctCount;
+                }
+                return a.timeSec - b.timeSec;
+            });
+        }
+
+        function resetLeaderboard() {
+            if (confirm('순위표 데이터를 전체 삭제하시겠습니까?')) {
+                leaderboard = [];
+                saveLeaderboard();
+                renderLeaderboardTable();
+            }
+        }
+
+        // Start Quiz Handler
+        function handleStartQuiz(e) {
+            e.preventDefault();
+            playSound('click');
+
+            const idInput = document.getElementById('student-id').value.trim();
+            const nameInput = document.getElementById('student-name').value.trim();
+
+            if (!idInput || !nameInput) return;
+
+            currentUser = { studentId: idInput, name: nameInput };
+
+            // Update Header Badge
+            const badge = document.getElementById('header-user-badge');
+            badge.textContent = `${currentUser.studentId} ${currentUser.name}`;
+            badge.classList.remove('hidden');
+
+            // Reset Quiz State
+            currentQuestionIndex = 0;
+            userAnswers = [];
+            elapsedTime = 0;
+
+            // Switch Screen
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+
+            // Start Timer & Render Question
+            startTimer();
+            renderQuestion();
+        }
+
+        // Timer Logic
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                elapsedTime = Date.now() - startTime;
+                updateTimerDisplay(elapsedTime);
+            }, 50);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+        }
+
+        function updateTimerDisplay(ms) {
+            const totalSec = ms / 1000;
+            const minutes = Math.floor(totalSec / 60);
+            const seconds = Math.floor(totalSec % 60);
+            const tenths = Math.floor((ms % 1000) / 100);
+
+            const minStr = String(minutes).padStart(2, '0');
+            const secStr = String(seconds).padStart(2, '0');
+
+            document.getElementById('timer-display').textContent = `${minStr}:${secStr}.${tenths}`;
+        }
+
+        // Render Current Question
+        function renderQuestion() {
+            const q = QUIZ_QUESTIONS[currentQuestionIndex];
+
+            // Progress Update
+            document.getElementById('quiz-step-indicator').textContent = `문제 ${currentQuestionIndex + 1} / ${QUIZ_QUESTIONS.length}`;
+            const percent = ((currentQuestionIndex + 1) / QUIZ_QUESTIONS.length) * 100;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+
+            // Difficulty Badge Styling
+            const diffBadge = document.getElementById('difficulty-badge');
+            if (q.difficulty === '하') {
+                diffBadge.textContent = '난이도 하';
+                diffBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200';
+            } else {
+                diffBadge.textContent = '난이도 중';
+                diffBadge.className = 'px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 border border-amber-200';
+            }
+
+            // Category & Question Text
+            document.getElementById('question-category').textContent = `[${q.difficulty}] ${q.category}`;
+            document.getElementById('question-text').textContent = q.question;
+
+            // Options rendering
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+
+            // Hide feedback banner
+            const feedbackBanner = document.getElementById('feedback-banner');
+            feedbackBanner.classList.add('hidden');
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'w-full text-left p-4 rounded-2xl border border-gray-200 bg-white hover:bg-purple-50/50 hover:border-purple-300 transition duration-150 flex items-center space-x-3 group shadow-sm';
+                btn.onclick = () => selectOption(idx);
+
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-xl bg-gray-100 group-hover:bg-purple-200 text-gray-600 group-hover:text-purple-800 font-bold text-xs flex items-center justify-center transition">
+                        ${idx + 1}
+                    </span>
+                    <span class="text-sm font-medium text-gray-800 group-hover:text-purple-950 flex-1">
+                        ${opt}
+                    </span>
+                `;
+                container.appendChild(btn);
+            });
+        }
+
+        // Option Selected
+        function selectOption(selectedIndex) {
+            userAnswers.push(selectedIndex);
+            const q = QUIZ_QUESTIONS[currentQuestionIndex];
+            const isCorrect = (selectedIndex === q.answer);
+
+            // Play sound
+            playSound(isCorrect ? 'correct' : 'wrong');
+
+            // Highlight buttons
+            const buttons = document.getElementById('options-container').querySelectorAll('button');
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                if (idx === q.answer) {
+                    btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-emerald-900 font-medium flex items-center space-x-3 shadow-sm';
+                } else if (idx === selectedIndex && !isCorrect) {
+                    btn.className = 'w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 text-rose-900 font-medium flex items-center space-x-3 shadow-sm';
+                } else {
+                    btn.className = 'w-full text-left p-4 rounded-2xl border border-gray-100 bg-white/50 text-gray-400 flex items-center space-x-3 opacity-60';
+                }
+            });
+
+            // Show feedback
+            const feedbackBanner = document.getElementById('feedback-banner');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackDesc = document.getElementById('feedback-desc');
+
+            feedbackBanner.classList.remove('hidden');
+            if (isCorrect) {
+                feedbackBanner.className = 'p-4 rounded-xl border border-emerald-200 bg-emerald-50/90 text-emerald-900 shadow-sm';
+                feedbackTitle.textContent = '⭕ 정답입니다!';
+            } else {
+                feedbackBanner.className = 'p-4 rounded-xl border border-rose-200 bg-rose-50/90 text-rose-900 shadow-sm';
+                feedbackTitle.textContent = `❌ 오답입니다. (정답: ${q.answer + 1}번)`;
+            }
+            feedbackDesc.textContent = q.explanation;
+
+            // Transition to next question or complete after 1.4 seconds
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < QUIZ_QUESTIONS.length) {
+                    renderQuestion();
+                } else {
+                    finishQuiz();
+                }
+            }, 1400);
+        }
+
+        // Finish Quiz
+        function finishQuiz() {
+            stopTimer();
+            playSound('complete');
+
+            // Calculate Score & Correct Count
+            let correctCount = 0;
+            userAnswers.forEach((ans, idx) => {
+                if (ans === QUIZ_QUESTIONS[idx].answer) correctCount++;
+            });
+
+            const score = (correctCount / QUIZ_QUESTIONS.length) * 100;
+            const finalTimeSec = parseFloat((elapsedTime / 1000).toFixed(1));
+
+            // Create record
+            const newRecord = {
+                studentId: currentUser.studentId,
+                name: currentUser.name,
+                score: score,
+                correctCount: correctCount,
+                timeSec: finalTimeSec,
+                isCurrent: true
+            };
+
+            // Remove existing record for same student if present, or push
+            leaderboard = leaderboard.filter(r => !(r.studentId === currentUser.studentId && r.name === currentUser.name));
+            leaderboard.push(newRecord);
+
+            sortLeaderboard();
+            saveLeaderboard();
+
+            // Find current user rank
+            const userRankIndex = leaderboard.findIndex(r => r.isCurrent);
+            const userRank = userRankIndex !== -1 ? userRankIndex + 1 : 1;
+
+            // Render Results Screen
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.remove('hidden');
+
+            document.getElementById('result-user-info').textContent = `${currentUser.studentId} ${currentUser.name} 학생`;
+            document.getElementById('res-score').textContent = `${score}점`;
+            document.getElementById('res-accuracy').textContent = `(${QUIZ_QUESTIONS.length}문제 중 ${correctCount}개)`;
+            document.getElementById('res-time').textContent = `${finalTimeSec}초`;
+            document.getElementById('res-rank').textContent = `${userRank}위`;
+
+            // Trophy icon logic based on score
+            const trophy = document.getElementById('trophy-emoji');
+            if (score === 100) trophy.textContent = '🏆';
+            else if (score >= 80) trophy.textContent = '🥇';
+            else if (score >= 60) trophy.textContent = '🥈';
+            else trophy.textContent = '💡';
+
+            // Render Leaderboard Table
+            renderLeaderboardTable();
+            renderReviewModalContent();
+        }
+
+        // Render Leaderboard Table
+        function renderLeaderboardTable() {
+            const tbody = document.getElementById('leaderboard-tbody');
+            tbody.innerHTML = '';
+
+            if (leaderboard.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-gray-400 text-xs font-medium">등록된 순위 데이터가 없습니다.<br>첫 번째 도전자가 되어보세요! 🚀</td></tr>`;
+                return;
+            }
+
+            leaderboard.forEach((item, index) => {
+                const tr = document.createElement('tr');
+                const rank = index + 1;
+
+                let rankBadge = `${rank}위`;
+                if (rank === 1) rankBadge = '🥇 1위';
+                else if (rank === 2) rankBadge = '🥈 2위';
+                else if (rank === 3) rankBadge = '🥉 3위';
+
+                const isHighlight = item.isCurrent;
+                tr.className = isHighlight ? 'bg-purple-100/80 font-bold border-l-4 border-purple-500' : 'hover:bg-gray-50';
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-center text-xs font-bold">${rankBadge}</td>
+                    <td class="py-3 px-4 text-xs">${item.studentId}</td>
+                    <td class="py-3 px-4 text-xs">${item.name} ${isHighlight ? '<span class="text-[10px] bg-purple-500 text-white px-1.5 py-0.5 rounded ml-1">나</span>' : ''}</td>
+                    <td class="py-3 px-4 text-center text-xs text-emerald-700 font-semibold">${item.correctCount} / 5</td>
+                    <td class="py-3 px-4 text-center text-xs text-blue-700 font-mono">${item.timeSec}초</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render Answer Review Modal
+        function renderReviewModalContent() {
+            const container = document.getElementById('review-content');
+            container.innerHTML = '';
+
+            QUIZ_QUESTIONS.forEach((q, idx) => {
+                const userChoice = userAnswers[idx];
+                const isCorrect = (userChoice === q.answer);
+
+                const itemDiv = document.createElement('div');
+                itemDiv.className = `p-4 rounded-2xl border ${isCorrect ? 'border-emerald-200 bg-emerald-50/40' : 'border-rose-200 bg-rose-50/40'} space-y-2`;
+
+                itemDiv.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                            문제 ${idx + 1} (${q.difficulty}) - ${isCorrect ? '정답 ⭕' : '오답 ❌'}
+                        </span>
+                        <span class="text-xs text-gray-500">${q.category}</span>
+                    </div>
+                    <p class="font-bold text-sm text-gray-800">${q.question}</p>
+                    <div class="text-xs space-y-1 bg-white/80 p-3 rounded-xl border border-gray-100">
+                        <p class="${isCorrect ? 'text-emerald-700' : 'text-rose-600'} font-semibold">
+                            내가 선택한 답: ${userChoice !== undefined ? (userChoice + 1) + '번. ' + q.options[userChoice] : '미선택'}
+                        </p>
+                        ${!isCorrect ? `<p class="text-emerald-700 font-semibold">정답: ${q.answer + 1}번. ${q.options[q.answer]}</p>` : ''}
+                    </div>
+                    <p class="text-xs text-gray-600 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                        💡 <strong>해설:</strong> ${q.explanation}
+                    </p>
+                `;
+                container.appendChild(itemDiv);
+            });
+        }
+
+        function toggleReviewModal() {
+            playSound('click');
+            const modal = document.getElementById('modal-review');
+            modal.classList.toggle('hidden');
+        }
+
+        // Restart Quiz
+        function restartQuiz() {
+            playSound('click');
+            // Reset state flags
+            leaderboard.forEach(r => r.isCurrent = false);
+
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-start').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
